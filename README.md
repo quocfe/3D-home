@@ -1,128 +1,101 @@
-# Nếp — Trình bố trí phòng 3D
+# Nếp — Cấu hình tủ bếp module
 
-Demo chạy thật bằng **Vite + React + TypeScript + React Three Fiber/Drei + Zustand**. Giao diện tiếng Việt; một bố cục tự lưu trên trình duyệt, không backend, không Next.js, không tài khoản hay API trả phí.
+Demo **Vite + React + TypeScript + React Three Fiber/Drei + Zustand**, giao diện tiếng Việt. Đây là bộ cấu hình bếp thẳng/chữ L theo module, **không còn là trình đặt đồ tự do trong phòng**. Không backend, tài khoản, API trả phí, asset/model hoặc font tải ngoài. Mô hình 3D dựng bằng các khối procedural; chưa có AI ảnh → 3D.
 
-## Mở bản demo
+## Chạy demo
 
-- Thư mục: `/home/dev/data/room-planner-demo`
-- Bản xem trước: **http://localhost:5180/** (cũng dùng được `http://127.0.0.1:5180/`).
-- Server bind `0.0.0.0`; máy khác cần dùng IP của máy chủ và được phép qua firewall. Không tự mở firewall.
-- `localhost` và `127.0.0.1` là hai origin khác nhau: mỗi origin có bản tự lưu riêng.
-- Thông tin tiến trình và kiểm chứng cuối cùng: `artifacts/verification.md`, `artifacts/server.json`.
-
-## Chạy lại từ mã nguồn
-
-Đã kiểm tra với Node 26 và npm 11. Vite 7 yêu cầu Node 20.19+ hoặc 22.12+; khuyến nghị Node LTS còn hỗ trợ.
+- URL trên máy chủ: **http://localhost:5180/** hoặc **http://127.0.0.1:5180/**.
+- Hai hostname có localStorage riêng. Máy khác cần IP máy chủ và quyền truy cập mạng; không tự mở firewall.
+- Thư mục: `/home/dev/data/room-planner-demo`.
+- Preview bind `0.0.0.0`, phục vụ `dist/`; không tự khởi động sau reboot.
 
 ```bash
-cd /home/dev/data/room-planner-demo
 npm ci
-npm run dev -- --host 0.0.0.0 --port 5181
-```
-
-Dùng 5181 nếu bản preview 5180 vẫn đang chạy. Không dừng dịch vụ khác để lấy cổng.
-
-```bash
+npm run dev -- --host 0.0.0.0 --port 5181 --strictPort
+# Bản production:
 npm run build
-# Chạy ở cổng trống; lệnh này giữ terminal mở.
 npm run preview -- --host 0.0.0.0 --port 5180 --strictPort
 ```
 
-`dist/` là bản build tĩnh; có thể đưa lên static hosting. Preview hiện tại là tiến trình chạy nền của phiên làm việc, **không phải dịch vụ tự khởi động sau reboot**.
+Không chạy thêm preview nếu cổng 5180 đang dùng. Đã kiểm tra với Node 26.9.0 / npm 11.19.1; khi triển khai hãy dùng Node được các dependency trong lockfile hỗ trợ.
 
-## Điều khiển
+## Quy trình sử dụng
 
-1. Sửa **Dài / Rộng / Cao**, nhấn **Áp dụng kích thước**. Đơn vị mét. Dài/rộng 0,5–30 m; cao 0,5–10 m.
-2. Chọn món trong danh mục để hiện bản xem trước bán trong suốt. Di chuột trên sàn; viền xanh là hợp lệ, đỏ là vượt biên. Nhấp sàn đặt **đúng một món**, rồi tự thoát chế độ đặt. Nhấp đồ vật có sẵn không xuyên xuống sàn.
-3. Nếu đồ vật chỉ vừa khi xoay, hệ thống tự chọn một góc vừa phòng khi bắt đầu đặt. Có thể xoay bản xem trước thêm 15°. Nếu không góc nào vừa hoặc món cao hơn trần, có thông báo và không vào chế độ đặt.
-4. Nhấp đồ vật trong phòng hoặc danh sách **Trong phòng** để chọn. Viền xanh và bảng thuộc tính cho biết món đang chọn. Kéo chuột trái trên đồ vật để di chuyển theo mặt phẳng sàn **XZ**, không nâng theo Y. Ngưỡng 5 pixel phân biệt nhấp và kéo.
-5. **−15° / +15°** xoay quanh trục Y; **Xóa đồ vật** hoặc phím **Delete** để xóa. Không cho đổi kích thước mô hình.
-6. Khi kéo, camera bị khóa. Thả ở vị trí không hợp lệ sẽ quay về vị trí ban đầu. **Esc**, mất pointer capture, pointer cancel, rời canvas hoặc mất focus cửa sổ cũng hủy kéo và mở khóa camera.
-7. **Esc** hủy đặt hoặc kéo. **Ctrl/Cmd Z** hoàn tác; **Ctrl/Cmd Shift Z** hoặc **Ctrl Y** làm lại. Mỗi thao tác hoàn tất tạo đúng một bước lịch sử; di chuyển chuột, chọn món và camera không tạo bước.
-8. **Phối cảnh**: kéo trên vùng trống để orbit, chuột phải để pan, cuộn để zoom. **Mặt bằng**: camera orthographic nhìn từ trên xuống, không orbit; chuột phải pan và cuộn zoom. Đổi chế độ để trở về góc nhìn mặc định. Tường gần camera tự ẩn, mặt bằng luôn ẩn tường.
-9. Thu nhỏ phòng **không dồn, xóa hay kẹp vị trí** đồ vật cũ. Món không vừa được đánh dấu đỏ và có cảnh báo. Có thể kéo món đó trở lại vùng hợp lệ. Nếu món nằm ngoài khung nhìn, thu nhỏ góc nhìn/pan để tìm hoặc hoàn tác kích thước phòng.
+1. Chọn **Thẳng / Chữ L**, nhập chiều dài nhánh bằng **mm**, Enter hoặc rời ô để áp dụng. Chiều dài nhánh 1.000–10.000 mm; rộng vùng 100–10.000 mm.
+2. Năm vùng cố định: **Thực phẩm, Dụng cụ, Rửa, Sơ chế, Nấu**. Chọn nhánh, đổi thứ tự bằng mũi tên và phân bổ chiều rộng. Thứ tự trên mỗi nhánh tính từ góc/đầu trái ra ngoài.
+3. Nhấp vùng trên mặt đứng, chú giải hoặc danh sách để lọc danh mục tương thích. Thêm nhiều module vào một vùng; có thể sao chép, xóa, đổi thứ tự hoặc chuyển sang vùng tương thích.
+4. Chọn biến thể **rộng × cao × sâu**, vật liệu/màu hoàn thiện. Mỗi biến thể có kích thước cố định, không kéo giãn. Giá và hình cập nhật ngay.
+5. Đọc dung lượng từng tầng và các cảnh báo trước khi xem bảng giá từng module, từng vùng và tổng. **Giá là số liệu demo, không phải báo giá thi công.**
 
-Không chặn va chạm giữa các đồ vật: có thể đặt chồng lên nhau theo chủ ý. Kiểm tra biên áp dụng cho toàn bộ hình chữ nhật đáy đã xoay, không chỉ tâm, đồng thời kiểm tra chiều cao.
+### Quy tắc bố trí
 
-## Lưu, nhập, xuất
+- Bếp L giữ **góc chết 650 × 650 mm**, trừ 650 mm đầu **cả hai nhánh, cả tầng dưới và trên**. Nhãn hiển thị chiều dài hữu dụng riêng với tổng chiều dài. Góc không có tủ; nẹp bù chưa tính giá.
+- Tủ dưới và tủ trên xếp độc lập từ đầu vùng. Tủ cao chiếm tầng dưới và chặn phần tầng trên giao với nó. Không tự chèn khoảng trống; đổi thứ tự tủ dưới/cao để tránh chặn.
+- Thêm mới không vừa bị chặn kèm lý do. Thu nhỏ, đổi kiểu, đổi biến thể, chuyển vùng hoặc nhập cấu hình **không xóa sản phẩm đã chọn**: giữ dữ liệu và báo lỗi để sửa. Nhánh B khi chuyển về bếp thẳng vẫn được giữ trong dữ liệu, không dựng trong 3D.
+- Mặt đứng SVG trực giao trên nền sáng là trình chỉnh sửa chính. 3D tổng thể tải lười, kéo để xoay/cuộn để zoom/nhấp tủ để chọn vùng. Nếu khởi tạo WebGL lỗi, giao diện vẫn hoạt động và có thể quay về **Trực diện**.
+- **Hoàn tác / Làm lại** hoặc Ctrl/Cmd Z, Ctrl/Cmd Shift Z, Ctrl Y; tối đa 100 bước, không lưu lịch sử qua reload.
 
-- Một bản lưu `localStorage`, khóa `nep-layout-v1`, sau mỗi thao tác làm đổi bố cục. Lịch sử undo/redo chỉ nằm trong RAM và được đặt lại khi tải trang.
-- Nút **Xuất bản vẽ** tải `nep-khong-gian.json` (dữ liệu bố cục, không phải PDF/CAD).
-- **Nhập JSON** thay thế bố cục như một thao tác có thể hoàn tác. Tệp sai không làm đổi bố cục hiện tại.
-- Giới hạn **100 đồ vật**, **100.000 byte UTF-8**. Kiểm tra version, số hữu hạn và khoảng hợp lệ, catalog ID cho phép, ID duy nhất, cấu trúc và trường không được phép. Không đọc URL mô hình, không tải mã hay asset từ nội dung import.
-- Tệp hợp lệ về cấu trúc nhưng có món vượt biên được nhận và đánh dấu, nhằm hỗ trợ layout sau khi thu nhỏ phòng.
-- Khi bộ nhớ bị chặn/đầy hoặc dữ liệu cũ hỏng, có cảnh báo. Đóng thông báo lỗi lưu không đổi trạng thái thành “đã lưu”. Hãy xuất JSON để giữ bản sao. Không đồng bộ đám mây hoặc đa tab.
+## Danh mục và giá
 
-Ví dụ schema v1:
+`src/kitchen/catalog.ts` là nguồn dữ liệu: tủ kho cao, tủ dưới hai cánh, tủ ba ngăn kéo, khoang chậu rửa, khoang bếp, tủ trên hai cánh và tủ kính mẫu. Vật liệu/màu là các gói kết hợp Melamine trắng ấm, Laminate vân sồi, Laminate xanh xám; không phải hai bộ chọn độc lập. Các biến thể hiện tại chủ yếu khác chiều rộng; cao/sâu cố định theo dòng tủ.
 
-```json
-{
-  "version": 1,
-  "room": { "length": 6, "width": 5, "height": 2.8 },
-  "items": [
-    { "id": "sofa-1", "catalogId": "sofa", "x": 0, "z": -1, "angle": 0 }
-  ]
-}
-```
+Giá VND nguyên = giá biến thể + phụ thu hoàn thiện từng module. Tủ kính mẫu có giá `null`: bảng ghi **Chưa có giá**, tổng chuyển sang **Tạm cộng phần đã có giá**, không coi giá thiếu là 0. Tình trạng đủ giá và tình trạng bố trí hợp lệ được xét riêng.
 
-Tọa độ gốc giữa sàn, Y hướng lên. `angle` tính bằng radian; import nhận −2π đến +2π. X/Z nhận −100 đến +100 để có thể giữ và sửa đồ vật nằm ngoài phòng. ID gồm chữ ASCII/số/gạch dưới/gạch ngang, dài 1–80 ký tự.
+**Không gồm** thiết bị, chậu/vòi, mặt đá, phụ kiện bổ sung, góc chết/nẹp bù, lắp đặt, vận chuyển và VAT. Cần khảo sát thực tế và xác nhận đơn vị thi công.
 
-## Danh mục và mô hình
+## Tự lưu, nhập và xuất
 
-| ID | Món | Rộng X × sâu Z × cao Y (m) |
-|---|---|---|
-| sofa | Sofa Mây | 2,2 × 0,9 × 0,85 |
-| coffee | Bàn trà Sồi | 1,1 × 0,6 × 0,42 |
-| chair | Ghế An | 0,55 × 0,55 × 0,85 |
-| desk | Bàn làm việc | 1,4 × 0,7 × 0,75 |
-| bed | Giường Êm | 1,6 × 2,1 × 0,95 |
-| wardrobe | Tủ áo Gỗ | 1,6 × 0,6 × 2,1 |
-| shelf | Kệ Mộc | 0,9 × 0,35 × 1,8 |
+- Khóa mới **`nep-kitchen-v1`**; không đụng bản phòng cũ `nep-layout-v1`.
+- Xuất **`nep-bep-v1.json`**; schema `version: 1`, `catalogVersion`, `shape`, `runs`, `zones`. Trong mỗi vùng có `id`, `kind`, `run`, `width`, `modules`; module có `id`, `productId`, `variant`, `finish`.
+- Nhập được kiểm tra toàn bộ trước khi thay trạng thái, có thể hoàn tác một bước. Tệp sai không thay cấu hình hoặc bản tự lưu.
+- Giới hạn 100.000 byte UTF-8, 100 module, đúng năm loại vùng không trùng, ID duy nhất, số nguyên trong khoảng, catalog/variant/finish được cho phép; từ chối trường lạ, URL asset và giá do tệp cung cấp.
+- Tệp khác catalogVersion được cảnh báo và tính lại theo danh mục hiện tại. Giá không lưu trong JSON.
+- Cấu hình sai hình học nhưng đúng schema được giữ và báo lỗi, không tự sửa/xóa.
+- Nếu localStorage bị chặn/đầy, chỉ báo không nhận là đã lưu; hãy xuất JSON. Dữ liệu hỏng được giữ đến lần chỉnh sửa tiếp theo. Không đồng bộ đám mây/đa tab.
 
-Các mô hình được dựng **procedural từ khối hộp** (chân, đệm, tựa, cửa, kệ, sách), gốc ở giữa đáy và theo mét thật. **Không phải GLB**, không dùng model bên ngoài. Thumbnail SVG được chiếu từ cùng cấu trúc hình học. Unit test xác nhận mọi bộ phận nằm trong kích thước công bố, kể cả tay nắm tủ. Chữ Be Vietnam Pro lấy từ Google Fonts; nếu mất mạng sẽ dùng Arial. Logic, scene và lưu trữ không cần dịch vụ bên ngoài.
-
-## Kiểm thử tái lập
+## Kiểm thử
 
 ```bash
 npm test
 npm run build
 npx playwright install chromium
-# Giữ server 5180 đang chạy ở terminal khác:
+# Preview production 5180 phải đang chạy:
 npm run test:browser
-# Hoặc chỉ định server của bạn:
+# Hoặc:
 BASE_URL=http://127.0.0.1:5181 npm run test:browser
 ```
 
-Playwright cấu hình Chromium + ANGLE SwiftShader để chạy WebGL trong môi trường không GPU. Trên Linux mới, nếu thiếu thư viện hệ thống, hãy cài theo hướng dẫn Playwright; dự án không tự chạy sudo.
+Kết quả phiên hoàn thiện: **27 unit test / 6 file**, **11 browser test**, build TypeScript/Vite thành công. Browser chạy trên bản production tại 5180 bằng Chromium + ANGLE SwiftShader. Có test mất WebGL, storage lỗi, import nguyên tử, sửa/giữ module khi thu nhỏ/chuyển kiểu, tầng độc lập/tủ cao, báo giá thiếu và cấu hình hoàn chỉnh.
 
-- Unit: hình chữ nhật xoay/chiều cao; tìm góc vừa kể cả chỉ vừa đường chéo; schema và giới hạn import; lịch sử/undo/redo; giữ vị trí khi thu nhỏ; lưu trữ lỗi; kích thước bộ phận; tạo ID trên origin HTTP LAN không có `randomUUID`.
-- Browser: đặt một lần; không xuyên đồ vật; invalid placement; chọn/xoay/xóa; kéo hợp lệ/không hợp lệ; Esc/blur/pointercancel/lost capture/rời canvas; ngưỡng click-drag; camera hoạt động lại; phòng thu nhỏ; góc xoay bị từ chối; đồ quá to/quá cao; góc đặt tự động; import/export/reload; lỗi storage; responsive; scene 20 món.
-- Chu trình test-first đã được thực hiện cho hình học, parser, store/lịch sử, persistence và các luồng UI/drag chính: chạy test thất bại trước khi thêm phần triển khai tương ứng. Các test hồi quy bổ sung cũng bắt được tay nắm vượt kích thước, thiếu `randomUUID` trên HTTP LAN và chỉ báo tự lưu sai sau khi đóng cảnh báo.
-- `playwright-report/index.html`: báo cáo HTML lần chạy mới nhất; trace/screenshot khi lỗi ở `test-results/`.
-- `artifacts/workspace.png`, `top-view.png`, `responsive.png`, `20-items.png`: ảnh chụp trình duyệt thật.
-- `artifacts/performance.json`: phép đo requestAnimationFrame trong scene 20 món, renderer, viewport, số frame và thời gian mẫu. **Không xem đây là đảm bảo FPS trên GPU thật**; SwiftShader chạy phần mềm, hiệu năng tùy máy và tải hệ thống.
+- `artifacts/verification-kitchen.md`: báo cáo thực nghiệm và giới hạn.
+- `artifacts/kitchen-*-tests.log`, `artifacts/kitchen-build.log`: log kiểm thử/build.
+- `artifacts/kitchen-full.png`, `kitchen-3d-detail.png`, `kitchen-mobile.png`: ảnh trình duyệt thật.
+- `playwright-report/`, `test-results/`: báo cáo lần chạy gần nhất.
+
+Artifacts, dist, node_modules và tệp môi trường không commit. Artifact phòng cũ có thể còn trong máy; chỉ dùng file `kitchen-*` và `verification-kitchen.md` cho bản này.
 
 ## Kiến trúc
 
 ```text
-src/core.ts          Kiểu dữ liệu, catalog, hình học thuần, kiểm tra JSON
-src/store.ts         Zustand vanilla, thao tác nguyên tử, lịch sử tối đa 100 bước
-src/persistence.ts   Adapter localStorage độc lập khỏi scene
-src/runtime.ts       Kết nối store với React và browser storage
-src/furniture.tsx    Bộ phận mô hình procedural + thumbnail cùng dữ liệu
-src/Scene.tsx        R3F scene, camera, sàn, tường, outline, preview
-src/useFloorDrag.ts  Giao dịch drag tạm thời, ray/plane, khóa/mở camera
-src/App.tsx          UI ba cột, bảng thuộc tính, phím tắt, import/export
-src/style.css        Thiết kế warm-neutral/teal, responsive
+src/kitchen/catalog.ts       Catalog/biến thể/vật liệu/giá demo
+src/kitchen/domain.ts        Bố trí theo nhánh/tầng, góc chết, kiểm tra dung lượng
+src/kitchen/pricing.ts       Giá module và tổng phần đã biết
+src/kitchen/persistence.ts   Parser chặt chẽ, storage adapter
+src/kitchen/store.ts         Giao dịch chỉnh sửa, lịch sử, import nguyên tử
+src/kitchen/runtime.ts       Kết nối React và browser storage
+src/kitchen/Elevation.tsx    Mặt đứng SVG, chọn vùng
+src/kitchen/model.ts         Hình học procedural theo kích thước variant
+src/kitchen/KitchenScene.tsx Tổng thể R3F, camera và chọn vùng
+src/kitchen/SceneBoundary.tsx Cô lập lỗi khởi tạo 3D khỏi editor
+src/kitchen/ModulePanel.tsx  Danh mục lọc và chỉnh từng module
+src/kitchen/Quote.tsx        Bảng giá demo có cảnh báo
+src/kitchen/App.tsx          Quy trình cấu hình, import/export, phím tắt
 ```
 
-Điểm quan trọng: pointermove chỉ cập nhật draft trong scene, không ghi layout/store/history/storage. Khi thả hợp lệ, store commit một lần. Hủy bỏ chỉ xóa draft. `fits()` dùng nửa kích thước bao theo `abs(cos θ)`/`abs(sin θ)`; tương đương kiểm tra tất cả góc của hình chữ nhật xoay trong phòng chữ nhật. `fittingAngle()` tìm các giao điểm biên lượng giác, không lấy mẫu góc thưa nên không bỏ sót trường hợp vừa theo đường chéo.
+## Giới hạn
 
-## Giới hạn chủ ý / chưa nghiệm thu
-
-- Desktop là mục tiêu chính. Bố cục responsive đã kiểm tra; **không nghiệm thu chỉnh sửa touch/mobile đầy đủ**. Browser tự động chỉ Chromium, chưa Firefox/Safari hoặc thiết bị GPU thật.
-- Không model GLB/PBR cao cấp, texture gỗ thật, resize, phòng đa giác, cửa/cửa sổ, tầng, va chạm đồ vật, CAD, PDF, project manager, backend hay cộng tác.
-- Tối đa 100 món là giới hạn dữ liệu, không phải cam kết FPS ở 100 món. Scene 20 món đã đo trên SwiftShader; xem số thực trong báo cáo.
-- Bundle WebGL lớn: Vite có thể cảnh báo chunk trên 500 KB; build vẫn hợp lệ.
-- Mất WebGL context hoặc driver lỗi có thể cần tải lại trang. Không tự phục hồi GPU context được nghiệm thu.
-- Server preview không tự khởi động lại sau reboot. Không thay đổi dịch vụ khác, không push GitHub, không mở firewall.
+- Mô hình minh họa, không GLB/PBR/texture thật; không thiết kế điện/nước, thiết bị, cửa mở, công thái học hoặc bản vẽ sản xuất. Không AI ảnh → 3D, PDF/CAD, cộng tác hay backend.
+- Chỉ bếp thẳng/L, năm vùng cố định và catalog demo nhỏ. Không bếp đảo/U, module góc chức năng, thay chiều cao lắp đặt hoặc chỉnh offset tự do.
+- Chromium desktop đã nghiệm thu; responsive 390 px đã kiểm tra không tràn ngang nhưng chưa nghiệm thu touch đầy đủ, Safari/Firefox hoặc GPU thật. Mobile là trang cuộn dài.
+- Cô lập lỗi khởi tạo WebGL đã kiểm tra; tự phục hồi context bị mất giữa phiên chưa nghiệm thu. 100 module là giới hạn dữ liệu, không cam kết FPS.
+- Chunk 3D trên 500 kB tạo cảnh báo Vite; tải lười nên không chặn trình chỉnh sửa SVG ban đầu.
