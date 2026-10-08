@@ -1,5 +1,5 @@
 import { functions, materials, product, type Run } from "./catalog";
-import { allocated, layout, reserve, type Kitchen } from "./domain";
+import { allocated, layout, reserve, usable, type Kitchen } from "./domain";
 export default function Elevation({
   data,
   run,
@@ -13,6 +13,8 @@ export default function Elevation({
 }) {
   const items = layout(data).filter((p) => p.zone.run === run);
   const length = Math.max(data.runs[run], allocated(data, run) + reserve(data));
+  const remaining = usable(data, run) - allocated(data, run);
+  const allocatedEnd = reserve(data) + allocated(data, run);
   let cursor = reserve(data);
   return (
     <svg
@@ -29,6 +31,9 @@ export default function Elevation({
           height="65"
         >
           <path d="M0 65L65 0" stroke="#c1b8a5" strokeWidth="7" />
+        </pattern>
+        <pattern id="unallocated-dots" patternUnits="userSpaceOnUse" width="55" height="55">
+          <circle cx="8" cy="8" r="5" fill="#9aa39d" />
         </pattern>
       </defs>
       <rect x="0" y="0" width={data.runs[run]} height="2300" fill="#f7f7f3" />
@@ -123,6 +128,17 @@ export default function Elevation({
             </g>
           );
         })}
+      {remaining > 0 && (
+        <g pointerEvents="none">
+          <rect x={allocatedEnd} y="0" width={remaining} height="2300" fill="url(#unallocated-dots)" opacity="0.32" />
+          <text x={allocatedEnd + remaining / 2} y="1080" textAnchor="middle" fontSize={Math.min(76, remaining / 8)} fill="#58665f">
+            CHƯA PHÂN BỔ
+          </text>
+          <text x={allocatedEnd + remaining / 2} y="1190" textAnchor="middle" fontSize="62" fill="#58665f">
+            {remaining} mm
+          </text>
+        </g>
+      )}
       {items.map((p) => {
         const x = p.start,
           y = 2300 - p.y - p.height,

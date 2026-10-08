@@ -21,18 +21,20 @@ Không chạy thêm preview nếu cổng 5180 đang dùng. Đã kiểm tra với
 
 ## Quy trình sử dụng
 
-1. Chọn **Thẳng / Chữ L**, nhập chiều dài nhánh bằng **mm**, Enter hoặc rời ô để áp dụng. Chiều dài nhánh 1.000–10.000 mm; rộng vùng 100–10.000 mm.
-2. Năm vùng cố định: **Thực phẩm, Dụng cụ, Rửa, Sơ chế, Nấu**. Chọn nhánh, đổi thứ tự bằng mũi tên và phân bổ chiều rộng. Thứ tự trên mỗi nhánh tính từ góc/đầu trái ra ngoài.
-3. Nhấp vùng trên mặt đứng, chú giải hoặc danh sách để lọc danh mục tương thích. Thêm nhiều module vào một vùng; có thể sao chép, xóa, đổi thứ tự hoặc chuyển sang vùng tương thích.
-4. Chọn biến thể **rộng × cao × sâu**, vật liệu/màu hoàn thiện. Mỗi biến thể có kích thước cố định, không kéo giãn. Giá và hình cập nhật ngay.
-5. Đọc dung lượng từng tầng và các cảnh báo trước khi xem bảng giá từng module, từng vùng và tổng. **Giá là số liệu demo, không phải báo giá thi công.**
+Giao diện là wizard **5 bước**, chỉ hiển thị công việc cần làm ở bước hiện tại. Nút **Quay lại / Tiếp tục** giữ nguyên dữ liệu; Tiếp tục bị khóa kèm lý do cụ thể khi kích thước, phân vùng hoặc lựa chọn sản phẩm chưa đáp ứng điều kiện.
+
+1. **Kiểu bếp:** chọn bếp thẳng hoặc chữ L bằng sơ đồ trực quan.
+2. **Kích thước:** nhập nhánh A/B bằng **mm** và đọc rõ chiều dài tổng so với phần hữu dụng sau khi trừ góc 650 mm. Chiều dài nhánh 1.000–10.000 mm.
+3. **Phân khu:** điều chỉnh năm khu **Thực phẩm, Dụng cụ, Rửa, Sơ chế, Nấu** bằng ô số, nút ±50 mm, nhánh A/B và nút đổi thứ tự. Thanh tóm tắt luôn ghi khu đang chỉnh, phần chưa phân bổ hoặc phần vượt.
+4. **Sản phẩm:** chọn khu bằng tab, rồi thêm trực tiếp từ thẻ sản phẩm; không cần nhấp canvas. Mỗi thẻ có hình procedural, tầng tương thích, biến thể **rộng × cao × sâu**, hoàn thiện, giá và nút **Thêm vào khu**. Danh sách đã chọn hỗ trợ sửa, chuyển khu, đổi thứ tự, sao chép và xóa.
+5. **Kết quả:** mặt trực diện và 3D chỉ xuất hiện ở bước review, cạnh kiểm tra cấu hình và bảng giá chi tiết. **Giá là số liệu demo, không phải báo giá thi công.**
 
 ### Quy tắc bố trí
 
 - Bếp L giữ **góc chết 650 × 650 mm**, trừ 650 mm đầu **cả hai nhánh, cả tầng dưới và trên**. Nhãn hiển thị chiều dài hữu dụng riêng với tổng chiều dài. Góc không có tủ; nẹp bù chưa tính giá.
 - Tủ dưới và tủ trên xếp độc lập từ đầu vùng. Tủ cao chiếm tầng dưới và chặn phần tầng trên giao với nó. Không tự chèn khoảng trống; đổi thứ tự tủ dưới/cao để tránh chặn.
 - Thêm mới không vừa bị chặn kèm lý do. Thu nhỏ, đổi kiểu, đổi biến thể, chuyển vùng hoặc nhập cấu hình **không xóa sản phẩm đã chọn**: giữ dữ liệu và báo lỗi để sửa. Nhánh B khi chuyển về bếp thẳng vẫn được giữ trong dữ liệu, không dựng trong 3D.
-- Mặt đứng SVG trực giao trên nền sáng là trình chỉnh sửa chính. 3D tổng thể tải lười, kéo để xoay/cuộn để zoom/nhấp tủ để chọn vùng. Nếu khởi tạo WebGL lỗi, giao diện vẫn hoạt động và có thể quay về **Trực diện**.
+- Wizard và danh sách sản phẩm là luồng chỉnh sửa chính. Mặt đứng SVG/3D là kết quả kiểm tra ở bước 5; 3D tải lười, kéo để xoay, cuộn để zoom và nhấp tủ để chọn vùng. Nếu khởi tạo WebGL lỗi, wizard vẫn hoạt động và có thể quay về **Trực diện**.
 - **Hoàn tác / Làm lại** hoặc Ctrl/Cmd Z, Ctrl/Cmd Shift Z, Ctrl Y; tối đa 100 bước, không lưu lịch sử qua reload.
 
 ## Danh mục và giá
@@ -65,7 +67,7 @@ npm run test:browser
 BASE_URL=http://127.0.0.1:5181 npm run test:browser
 ```
 
-Kết quả phiên hoàn thiện: **27 unit test / 6 file**, **11 browser test**, build TypeScript/Vite thành công. Browser chạy trên bản production tại 5180 bằng Chromium + ANGLE SwiftShader. Có test mất WebGL, storage lỗi, import nguyên tử, sửa/giữ module khi thu nhỏ/chuyển kiểu, tầng độc lập/tủ cao, báo giá thiếu và cấu hình hoàn chỉnh.
+Kết quả phiên hoàn thiện: **31 unit test / 7 file**, **14 browser test**, build TypeScript/Vite thành công. Browser chạy trên bản production tại 5180 bằng Chromium + ANGLE SwiftShader. Có test toàn bộ wizard, khóa bước/lý do lỗi, quay lại giữ dữ liệu, mobile 390 px, mất WebGL, storage lỗi, import nguyên tử, sửa/giữ module khi thu nhỏ/chuyển kiểu, tầng độc lập/tủ cao, báo giá thiếu và cấu hình hoàn chỉnh.
 
 - `artifacts/verification-kitchen.md`: báo cáo thực nghiệm và giới hạn.
 - `artifacts/kitchen-*-tests.log`, `artifacts/kitchen-build.log`: log kiểm thử/build.
@@ -89,7 +91,8 @@ src/kitchen/KitchenScene.tsx Tổng thể R3F, camera và chọn vùng
 src/kitchen/SceneBoundary.tsx Cô lập lỗi khởi tạo 3D khỏi editor
 src/kitchen/ModulePanel.tsx  Danh mục lọc và chỉnh từng module
 src/kitchen/Quote.tsx        Bảng giá demo có cảnh báo
-src/kitchen/App.tsx          Quy trình cấu hình, import/export, phím tắt
+src/kitchen/wizard.ts       Điều kiện chuyển bước và lý do khóa có thể kiểm thử
+src/kitchen/App.tsx          Wizard 5 bước, import/export, phím tắt
 ```
 
 ## Giới hạn

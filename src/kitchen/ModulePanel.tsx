@@ -76,7 +76,7 @@ function ProductCard({ p, data, zone, edit, notify }: Props & { p: Product }) {
         <strong>{cost === null ? "Chưa có giá" : vnd(cost)}</strong>
         <button
           className="primary"
-          aria-label={`Thêm ${p.name}`}
+          aria-label={`Thêm ${p.name} vào khu`}
           disabled={!!error}
           onClick={() => {
             edit((s) =>
@@ -87,7 +87,7 @@ function ProductCard({ p, data, zone, edit, notify }: Props & { p: Product }) {
             notify(`Đã thêm ${p.name}.`);
           }}
         >
-          + Thêm
+          Thêm vào khu
         </button>
       </div>
       {error && <p className="fit-note">{error}</p>}
@@ -112,12 +112,11 @@ export default function ModulePanel(props: Props) {
       ),
     );
   return (
-    <aside className="catalog-panel">
+    <div className="catalog-panel">
       <div className="panel-title">
-        <span className="step">03–04</span>
         <div>
-          <span className="eyebrow">MODULE & VẬT LIỆU</span>
-          <h2>{functions[zone.kind].name}</h2>
+          <span className="eyebrow">SẢN PHẨM TRONG KHU</span>
+          <h2>Đã chọn cho Khu {functions[zone.kind].name}</h2>
         </div>
         <span
           className="zone-dot"
@@ -146,10 +145,10 @@ export default function ModulePanel(props: Props) {
         vùng; đổi thứ tự tủ dưới/cao nếu bị chắn. Đổi biến thể hoặc chuyển vùng
         vẫn giữ module và báo lỗi nếu không vừa.
       </p>
-      <h3 className="section-label">Đã chọn · {zone.modules.length} module</h3>
+      <h3 className="section-label">Đã chọn · {zone.modules.length} sản phẩm</h3>
       {!zone.modules.length && (
         <p className="empty-note">
-          Vùng chưa có tủ. Chọn một module tương thích bên dưới để bắt đầu.
+          Khu này chưa có sản phẩm. Chọn trực tiếp từ danh mục bên dưới để bắt đầu.
         </p>
       )}
       {zone.modules.map((m, index) => {
@@ -271,7 +270,7 @@ export default function ModulePanel(props: Props) {
           </article>
         );
       })}
-      <h3 className="section-label">Danh mục tương thích</h3>
+      <h3 className="section-label">Sản phẩm phù hợp với khu này</h3>
       <p className="fine">
         Giá demo / module. Phụ thu vật liệu đã tính trong giá.
       </p>
@@ -280,6 +279,6 @@ export default function ModulePanel(props: Props) {
         .map((p) => (
           <ProductCard key={zone.id + p.id} {...props} p={p} />
         ))}
-    </aside>
+    </div>
   );
 }

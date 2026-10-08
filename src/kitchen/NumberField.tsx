@@ -20,12 +20,16 @@ export function NumberField({
   }, [value]);
   const commit = () => {
     const n = Number(draft);
-    if (!Number.isInteger(n) || n < min || n > max) {
+    if (!Number.isInteger(n)) {
+      setError(true);
+      return;
+    }
+    onCommit(n);
+    if (n < min || n > max) {
       setError(true);
       return;
     }
     setError(false);
-    onCommit(n);
   };
   return (
     <label className="number-field">
